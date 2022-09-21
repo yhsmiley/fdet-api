@@ -17,10 +17,9 @@ A: Based on experience, pain in the ass, but doable
 def eval(gtFile, dtFile):
     GTpath = Path(gtFile)
     DTpath = Path(dtFile)
-
+    assert DTpath.is_file()
+    
     GTpath = GTpath if GTpath.is_file() else COCO_Combinator(gtFile, 'gtMerge.json').merge()
-    DTpath = DTpath if DTpath.is_file() else COCO_Combinator(dtFile, 'dtMerge.json').merge()
-    # coco = COCO()
 
     cocoGt=COCO(str(GTpath))
     cocoDt=cocoGt.loadRes(str(DTpath))

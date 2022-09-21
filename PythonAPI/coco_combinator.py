@@ -7,6 +7,14 @@ import logging, json
 Adapted from
 https://github.com/ashnair1/COCO-Assistant
 '''
+# class ImageIDRemapper:
+#     def __init__(self, img1, img2):
+#         '''
+#         Trying to make the process run in linear time
+#         1. Setup empty dict
+#         2. Traverse 1 of the dicts
+#         3. Remap annotations on this particular dict if overlap, then add annotations 
+#         '''
 
 class CatRemapper:
     def __init__(self, cat1, cat2):
@@ -156,9 +164,9 @@ class CatRemapper:
 
 class COCO_Combinator:
     '''
-    TODO: 
-    AssertionError: Results do not correspond to current coco set
-    Probably because same images are still processed as separate entities, so things screw up
+    Aims to combine json files as best as possible
+    Constraints:
+     - Don't combine multiples of the same file: same-image annotations will not be remapped and will cause problems during evaluation
     '''
     def __init__(self, ann_dir: str, merge_name: str=None):
         self.ann_dir = Path(ann_dir)
