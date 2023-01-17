@@ -1,4 +1,4 @@
-# F-Beta Better Than COCO API
+# F-beta score for Detection API
 
 This repo is a drop-in replacement for [cocoapi](https://github.com/cocodataset/cocoapi) to calculate F-beta scores for object detection tasks.
 
@@ -11,7 +11,7 @@ cd PythonAPI && make
 OR
 
 ```
-pip3 install 'git+https://github.com/yhsmiley/cocoapi.git#subdirectory=PythonAPI'
+pip3 install 'git+https://github.com/yhsmiley/fdet-api.git#subdirectory=PythonAPI'
 ```
 
 ## Usage
@@ -63,3 +63,10 @@ mapAll, map50 = cocoEval.stats[:2]
 
 cocoEval.plotCocoPRCurve(filename, classIdx=None)
 ```
+
+## TODO
+
+- [x] Vectorize `_getFBetaScore()`
+- [x] Add option for micro/macro/weighted Fscores for `_getFBetaScore()`
+- [x] Combine similar functions
+- [x] Plot FBetaCurve per class
