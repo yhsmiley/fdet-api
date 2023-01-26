@@ -526,9 +526,9 @@ class COCOeval:
         x = np.arange(0.0, 1.01, 0.01)
         plt.figure()
         if classIdx is None:
-            title = f'P-R curve'
+            title = f'COCO P-R curve'
         else:
-            title = f'P-R curve for class={className}'
+            title = f'COCO P-R curve for class={className}'
 
         for idx, iouThr in enumerate(p.iouThrs):
             plt.plot(x, prArray[idx, :], label=f'iou={iouThr:0.2f}')
@@ -915,6 +915,41 @@ class COCOeval:
         plt.grid(True)
         plt.legend(loc='lower left')
         plt.savefig(filename)
+
+    def getBestFBeta(self, beta=1, iouThr=0.5, areaRng='all', classIdx=None, average='macro'):
+        '''
+        Get best F-beta scores
+        :param beta: F-beta score to calculate
+        :param iouThr: IOU threshold
+        :param areaRng: object area range (options: 'all', 'small', 'medium', 'large')
+        :param classIdx: to calculate for a specific class
+        :param average: averaging method (options: 'micro', 'macro', 'weighted')
+        :return: F-score, confidence threshold, precision, recall
+        '''
+        if not self.evalFBeta:
+            raise Exception('Please run accumulateFBeta() first')
+
+        p = self.params
+
+        if classIdx is not None:
+            className = p.catIdsToCatNms[classIdx]
+
+        tpCum, fpCum, fnCum, numGtCum = self._filterCum(iouThr, areaRng, classIdx)
+        precision, recall = self._calculatePrecisionRecall(tpCum, fpCum, fnCum, numGtCum, average)
+
+        score = np.divide(
+                    (1 + beta**2) * precision * recall,
+                    (beta**2 * precision) + recall,
+                    out=np.full(precision.shape, 0, np.float),
+                    where=(precision + recall)!=0)
+
+        maxIdx = np.argmax(score)
+        if classIdx is None:
+            print(f'Best {average} F{beta} for iouThr {iouThr} is {score[maxIdx]:0.3f} at confThr {p.confThrs[maxIdx]:0.2f}: precision {precision[maxIdx]:0.3f}, recall {recall[maxIdx]:0.3f}')
+        else:
+            print(f'Best F{beta} for class {className} is {score[maxIdx]:0.3f} at confThr {p.confThrs[maxIdx]:0.2f}: precision {precision[maxIdx]:0.3f}, recall {recall[maxIdx]:0.3f}')
+
+        return score[maxIdx], p.confThrs[maxIdx], precision[maxIdx], recall[maxIdx]
 
     def __str__(self):
         self.summarize()

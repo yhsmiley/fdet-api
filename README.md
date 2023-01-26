@@ -31,6 +31,11 @@ cocoEval.evaluate()
 cocoEval.accumulateFBeta()
 ```
 
+Get best F-beta score for specific iou threshold and class (optional):
+```
+fscore, conf, precision, recall = cocoEval.getBestFBeta(beta=1, iouThr=0.5, classIdx=None, average='macro')
+```
+
 ```
 cocoEval.summarizeFBetaScores(average='macro')
 ```
