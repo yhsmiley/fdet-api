@@ -194,7 +194,7 @@ class COCOeval:
             raise Exception('unknown iouType for iou computation')
 
         # compute iou between each dt and gt region
-        iscrowd = [int(o['iscrowd']) for o in gt]
+        iscrowd = [int(o['iscrowd']) if 'iscrowd' in gt else 0 for o in gt]
         ious = maskUtils.iou(d,g,iscrowd)
         return ious
 
@@ -267,7 +267,7 @@ class COCOeval:
         gt = [gt[i] for i in gtind]
         dtind = np.argsort([-d['score'] for d in dt], kind='mergesort')
         dt = [dt[i] for i in dtind[0:maxDet]]
-        iscrowd = [int(o['iscrowd']) for o in gt]
+        iscrowd = [int(o['iscrowd']) if 'iscrowd' in gt else 0 for o in gt]
         # load computed ious
         ious = self.ious[imgId, catId][:, gtind] if len(self.ious[imgId, catId]) > 0 else self.ious[imgId, catId]
 
@@ -384,8 +384,8 @@ class COCOeval:
                     tps = np.logical_and(dtm, np.logical_not(dtIg) )
                     fps = np.logical_and(np.logical_not(dtm), np.logical_not(dtIg) )
 
-                    tp_sum = np.cumsum(tps, axis=1).astype(dtype=np.float)
-                    fp_sum = np.cumsum(fps, axis=1).astype(dtype=np.float)
+                    tp_sum = np.cumsum(tps, axis=1).astype(dtype=np.float64)
+                    fp_sum = np.cumsum(fps, axis=1).astype(dtype=np.float64)
                     for t, (tp, fp) in enumerate(zip(tp_sum, fp_sum)):
                         tp = np.array(tp)
                         fp = np.array(fp)
@@ -645,8 +645,8 @@ class COCOeval:
             fnCum = np.sum(fnCum, axis=0)
             numGtCum = np.sum(numGtCum, axis=0)
 
-        precision = np.divide(tpCum, (tpCum + fpCum), out=np.full(tpCum.shape, np.nan, np.float), where=(tpCum + fpCum)>0)
-        recall = np.divide(tpCum, numGtCum, out=np.full(tpCum.shape, np.nan, np.float), where=numGtCum>0)
+        precision = np.divide(tpCum, (tpCum + fpCum), out=np.full(tpCum.shape, np.nan, np.float64), where=(tpCum + fpCum)>0)
+        recall = np.divide(tpCum, numGtCum, out=np.full(tpCum.shape, np.nan, np.float64), where=numGtCum>0)
 
         # take care of edge cases (https://github.com/dice-group/gerbil/wiki/Precision,-Recall-and-F1-measure)
         edge1 = np.equal(tpCum, 0) & np.equal(fpCum, 0) & np.equal(fnCum, 0) & np.greater(numGtCum, 0)
@@ -677,7 +677,7 @@ class COCOeval:
         score = np.divide(
                     (1 + beta**2) * precision * recall,
                     (beta**2 * precision) + recall,
-                    out=np.full(precision.shape, 0, np.float),
+                    out=np.full(precision.shape, 0, np.float64),
                     where=(precision + recall)!=0)
         return score
 
@@ -849,7 +849,7 @@ class COCOeval:
             score = np.divide(
                         (1 + beta**2) * precision * recall,
                         (beta**2 * precision) + recall,
-                        out=np.full(precision.shape, 0, np.float),
+                        out=np.full(precision.shape, 0, np.float64),
                         where=(precision + recall)!=0)
 
             maxIdx = np.argmax(score)
@@ -940,7 +940,7 @@ class COCOeval:
         score = np.divide(
                     (1 + beta**2) * precision * recall,
                     (beta**2 * precision) + recall,
-                    out=np.full(precision.shape, 0, np.float),
+                    out=np.full(precision.shape, 0, np.float64),
                     where=(precision + recall)!=0)
 
         maxIdx = np.argmax(score)
