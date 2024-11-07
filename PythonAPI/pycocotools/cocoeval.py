@@ -965,7 +965,9 @@ class Params:
         self.iouThrs = np.linspace(.5, 0.95, int(np.round((0.95 - .5) / .05)) + 1, endpoint=True)
         self.iouThrs = np.around(self.iouThrs, 2)
         self.recThrs = np.linspace(.0, 1.00, int(np.round((1.00 - .0) / .01)) + 1, endpoint=True)
+        self.recThrs = np.around(self.recThrs, 2)
         self.confThrs = np.linspace(0, 1, int(np.round((1 - 0) / .01)) + 1, endpoint=True)
+        self.confThrs = np.around(self.confThrs, 2)
         self.maxDets = [1, 10, 100, 1000]
         self.areaRng = [[0 ** 2, 1e5 ** 2], [0 ** 2, 32 ** 2], [32 ** 2, 96 ** 2], [96 ** 2, 1e5 ** 2]]
         self.areaRngLbl = ['all', 'small', 'medium', 'large']
