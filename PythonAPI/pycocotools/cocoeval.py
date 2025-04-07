@@ -589,7 +589,7 @@ class COCOeval:
 
                     dtIgnore = imageDict['dtIgnore']
                     finalMask = scoreMask & ~dtIgnore
-                    filteredArr = np.where(finalMask==True, imageDict['dtMatches'], -np.ones((10,1)))
+                    filteredArr = np.where(finalMask==True, imageDict['dtMatches'], -np.ones((T,1)))
                     filteredArr = np.swapaxes(filteredArr, 0, 1)
 
                     tpCum[a,k,:,:] += np.sum(filteredArr > 0, axis=2)
@@ -962,7 +962,7 @@ class Params:
         self.imgIds = []
         self.catIds = []
         # np.arange causes trouble.  the data point on arange is slightly larger than the true value
-        self.iouThrs = np.linspace(.5, 0.95, int(np.round((0.95 - .5) / .05)) + 1, endpoint=True)
+        self.iouThrs = np.linspace(.1, 0.95, int(np.round((0.95 - .1) / .05)) + 1, endpoint=True)
         self.iouThrs = np.around(self.iouThrs, 2)
         self.recThrs = np.linspace(.0, 1.00, int(np.round((1.00 - .0) / .01)) + 1, endpoint=True)
         self.recThrs = np.around(self.recThrs, 2)
@@ -977,7 +977,7 @@ class Params:
         self.imgIds = []
         self.catIds = []
         # np.arange causes trouble.  the data point on arange is slightly larger than the true value
-        self.iouThrs = np.linspace(.5, 0.95, int(np.round((0.95 - .5) / .05)) + 1, endpoint=True)
+        self.iouThrs = np.linspace(.1, 0.95, int(np.round((0.95 - .1) / .05)) + 1, endpoint=True)
         self.recThrs = np.linspace(.0, 1.00, int(np.round((1.00 - .0) / .01)) + 1, endpoint=True)
         self.maxDets = [20]
         self.areaRng = [[0 ** 2, 1e5 ** 2], [32 ** 2, 96 ** 2], [96 ** 2, 1e5 ** 2]]
